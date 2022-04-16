@@ -2,7 +2,6 @@ import * as mongoose from 'mongoose';
 
 
 export const JogadorSchema = new mongoose.Schema({
-	
 	telefoneCelular:{type:String},
 	email:{type:String , unique:true},
 	nome:String,
@@ -15,9 +14,3 @@ export const JogadorSchema = new mongoose.Schema({
 		collection:'jogadores'
 
 	})
-
-
-
-
-
-	

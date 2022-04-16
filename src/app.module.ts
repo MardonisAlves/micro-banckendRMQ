@@ -3,8 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import {MongooseModule} from '@nestjs/mongoose';
 import {CategoriaSchema} from './schemas/categoria.schema';
 import {JogadorSchema} from './schemas/jogador.schema';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { CategoriasService } from './categorias/categorias.service';
+import { JogadoresService } from './jogadores/jogadores.service'
+import  {CategoriasController} from './categorias/categorias.controller';
+import { JogadoresController } from './jogadores/jogadores.controller';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -16,7 +18,8 @@ import { AppService } from './app.service';
       {name: 'Jogador' , schema: JogadorSchema}
     ])
   ],
-  controllers: [AppController],
-  providers: [AppService],
+
+  controllers:[CategoriasController, JogadoresController],
+  providers: [CategoriasService, JogadoresService]
 })
 export class AppModule {}

@@ -11,6 +11,7 @@ async function bootstrap() {
   	 transport: Transport.RMQ,
       options:{
          urls: ['amqp://admin:admin@localhost:5672'],
+         noAck:false,
         queue:'filas_martrank',
       },
   });
