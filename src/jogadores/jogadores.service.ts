@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Jogador } from './interfaces/jogador.interface'
+import {JogadorEmail} from './interfaces/jogador-email';
 import {Model} from 'mongoose';
 @Injectable()
 export class JogadoresService {
@@ -17,7 +18,6 @@ export class JogadoresService {
 
 	async getjogador(_id:string) :Promise<any>{
 		try{
-			console.log(_id)
 		return await this.jogadorModel.findOne({_id}).exec();
 		}catch(error){
 		this.logger.log(error)		}
@@ -27,6 +27,16 @@ export class JogadoresService {
 		try{
 		return await this.jogadorModel.find().exec();
 		}catch(error){
-		this.logger.log(error)		}
+		this.logger.log(error)
+	}
+	}
+
+	async getjogadorByEmail(emailjogador:JogadorEmail) : Promise<Jogador>{
+		const {email} = emailjogador
+		try{
+		return this.jogadorModel.findOne({email}).exec();
+		}catch(error){
+			this.logger.log(error)
+		}
 	}
 }
