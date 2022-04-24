@@ -1,6 +1,7 @@
 import { Controller, Post, Logger, Res } from '@nestjs/common';
 import { EventPattern, Payload, MessagePattern, Ctx, RmqContext } from '@nestjs/microservices';
 import { Jogador } from './interfaces/jogador.interface';
+import {AtualizarJogador } from './interfaces/atulzar-jogador.interface';
 import {JogadorEmail } from './interfaces/jogador-email';
 import { JogadoresService } from './jogadores.service';
 import {Response } from 'express';
@@ -53,5 +54,14 @@ async getjogadorByEmail(@Payload() email:JogadorEmail){
 	}catch(error){
 	this.logger.log(error)
 	}
+}
+
+@MessagePattern('atualizar-jogador')
+async atualizarJogador(@Payload() atualizarJogadorDto:AtualizarJogador){
+	try{
+		
+		return this.jogadoresService.atualizarJogador(atualizarJogadorDto);
+	}catch(error){
+		this.logger.log(error)	}
 }
 }
