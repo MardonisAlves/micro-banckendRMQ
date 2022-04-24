@@ -64,4 +64,13 @@ async atualizarJogador(@Payload() atualizarJogadorDto:AtualizarJogador){
 	}catch(error){
 		this.logger.log(error)	}
 }
+
+@MessagePattern('deletar-jogador')
+async deletarJogador(@Payload() _id:string){
+	try {
+		return  this.jogadoresService.deletarJogadorId(_id);
+	} catch (error) {
+		this.logger.log(error)
+	}
+}
 }
