@@ -17,7 +17,7 @@ export class JogadoresService {
 		}
 	}
 
-	async getjogador(_id:string) :Promise<any>{
+	async getjogador(_id:string) :Promise<Jogador>{
 		try{
 		return await this.jogadorModel.findOne({_id}).exec();
 		}catch(error){
@@ -52,8 +52,24 @@ export class JogadoresService {
 						email:jogador.atualizarJogadorDto.email,
 						ranking:jogador.atualizarJogadorDto.ranking,
 						posicaoRanking:jogador.atualizarJogadorDto.posicaoRanking,
-						urlFotoJogador:jogador.atualizarJogadorDto.urlFotoJogador,
 						telefoneCelular:jogador.atualizarJogadorDto.telefoneCelular
+					}
+				}
+				).exec();
+		}catch(error){
+				this.logger.log(error)
+		}
+		
+	}
+
+
+	async atualizarAvatar(jogador:any): Promise<any>{
+
+		try{
+			return this.jogadorModel.findOneAndUpdate(
+				{_id:jogador._id},{
+					$set:{
+						urlFotoJogador:jogador.urlFotoJogador
 					}
 				}
 				).exec();
@@ -71,6 +87,6 @@ export class JogadoresService {
 			this.logger.log(error)
 		}
 
-		return ;
+		
 	}
 }

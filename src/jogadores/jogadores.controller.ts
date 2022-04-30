@@ -37,8 +37,9 @@ async criarJogador(@Payload() criarJogador:Jogador , @Ctx() context:RmqContext, 
 @MessagePattern('jogadores')
 async getjogadores(@Payload() _id:string){
 	try{
+		//this.logger.log(_id)
 		if(_id){
-			return this.jogadoresService.getjogadores()
+			return this.jogadoresService.getjogador(_id)
 		}else{
 			return this.jogadoresService.getjogadores()
 		}
@@ -61,6 +62,15 @@ async atualizarJogador(@Payload() atualizarJogadorDto:AtualizarJogador){
 	try{
 		
 		return this.jogadoresService.atualizarJogador(atualizarJogadorDto);
+	}catch(error){
+		this.logger.log(error)	}
+}
+
+@MessagePattern('atualizar-avatar')
+async atualizarAvatar(@Payload() atualizarJogadorDto:any){
+	try{
+		return this.jogadoresService.atualizarAvatar(atualizarJogadorDto);
+		return;
 	}catch(error){
 		this.logger.log(error)	}
 }
