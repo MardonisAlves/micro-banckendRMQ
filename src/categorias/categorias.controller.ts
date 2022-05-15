@@ -10,7 +10,7 @@ export class CategoriasController {
 	 constructor(private readonly categoriasService: CategoriasService) { }
   logger = new Logger(CategoriasController.name)
 
-  @EventPattern('cria-categoria')
+  @EventPattern('criar-categoria')
   async criarCategoria(@Payload() categoria: Categoria, @Ctx() context:RmqContext) {
     let errorAck = ["E11000"];
     const channel = context.getChannelRef();

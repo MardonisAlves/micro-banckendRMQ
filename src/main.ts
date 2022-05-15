@@ -10,9 +10,9 @@ async function bootstrap() {
   const app = await NestFactory.createMicroservice(AppModule, {
   	 transport: Transport.RMQ,
       options:{
-         urls: ['amqp://admin:admin@localhost:5672'],
+         urls: [`amqp://${process.env.RABBITMQ_DEFAULT_USER}:${process.env.RABBITMQ_DEFAULT_PASS}@${process.env.RABBITMQ_HOST}`],
          noAck:false,
-        queue:'filas_martrank',
+        queue:`${process.env.RABBITMQ_QUEUE}`,
       },
   });
 
