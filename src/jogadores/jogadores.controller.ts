@@ -58,10 +58,12 @@ async getjogadorByEmail(@Payload() email:JogadorEmail){
 }
 
 @MessagePattern('atualizar-jogador')
-async atualizarJogador(@Payload() atualizarJogadorDto:AtualizarJogador){
+async atualizarJogador(
+	@Payload() atualizarJogadorDto:AtualizarJogador,
+	@Payload() id:string){
 	try{
 		
-		return this.jogadoresService.atualizarJogador(atualizarJogadorDto);
+		return this.jogadoresService.atualizarJogador(atualizarJogadorDto, id);
 	}catch(error){
 		this.logger.log(error)	}
 }

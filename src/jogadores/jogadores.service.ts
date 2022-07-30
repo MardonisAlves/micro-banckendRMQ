@@ -41,12 +41,10 @@ export class JogadoresService {
 		}
 	}
 
-	async atualizarJogador(jogador:any): Promise<any>{
-		this.logger.log(jogador.atualizarJogadorDto.email)
-		this.logger.log(jogador._id)
+	async atualizarJogador(jogador:any, id): Promise<any>{
 		try{
 			return this.jogadorModel.findOneAndUpdate(
-				{_id:jogador._id},{
+				{_id:id.id},{
 					$set:{
 						nome:jogador.atualizarJogadorDto.nome,
 						email:jogador.atualizarJogadorDto.email,
@@ -80,7 +78,7 @@ export class JogadoresService {
 	}
 
 	async deletarJogadorId(_id:string): Promise<any>{
-		this.logger.log(_id)
+		//this.logger.log(_id)
 		try {
 			return this.jogadorModel.deleteOne({_id}).exec()
 		} catch (error) {

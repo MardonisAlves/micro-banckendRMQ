@@ -27,6 +27,7 @@
     "@nestjs/microservices": "^8.4.3",
     "@nestjs/mongoose": "^9.0.3",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/swagger": "^6.0.4",
     "amqp-connection-manager": "^4.1.1",
     "amqplib": "^0.8.0",
     "mongoose": "^6.2.8",
