@@ -7,6 +7,9 @@ import { CategoriasService } from './categorias/categorias.service';
 import { JogadoresService } from './jogadores/jogadores.service'
 import  {CategoriasController} from './categorias/categorias.controller';
 import { JogadoresController } from './jogadores/jogadores.controller';
+import Twilioservice from './jogadores/services.twilio';
+import ZenviaService from './jogadores/zenvia.service';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,6 +23,6 @@ import { JogadoresController } from './jogadores/jogadores.controller';
   ],
 
   controllers:[CategoriasController, JogadoresController],
-  providers: [CategoriasService, JogadoresService]
+  providers: [CategoriasService, JogadoresService, Twilioservice, ZenviaService]
 })
 export class AppModule {}

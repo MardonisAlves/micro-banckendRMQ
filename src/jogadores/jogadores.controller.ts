@@ -5,10 +5,17 @@ import {AtualizarJogador } from './interfaces/atulzar-jogador.interface';
 import {JogadorEmail } from './interfaces/jogador-email';
 import { JogadoresService } from './jogadores.service';
 import {Response } from 'express';
+import Twilioservice from './services.twilio';
+import { Sms } from './interfaces/sms.interface';
+import ZenviaService from './zenvia.service';
 @Controller('jogadores')
 export class JogadoresController {
 private  logger = new Logger(JogadoresController.name);
-constructor(private readonly jogadoresService: JogadoresService){}
+constructor(
+	private readonly jogadoresService: JogadoresService,
+	private readonly twlioservices:Twilioservice,
+	private readonly zenviaservice:ZenviaService
+	       ){}
 
 @EventPattern('new-jogador')
 async criarJogador(@Payload() criarJogador:Jogador , @Ctx() context:RmqContext, @Res() response:Response){
@@ -37,7 +44,6 @@ async criarJogador(@Payload() criarJogador:Jogador , @Ctx() context:RmqContext, 
 @MessagePattern('jogadores')
 async getjogadores(@Payload() _id:string){
 	try{
-		//this.logger.log(_id)
 		if(_id){
 			return this.jogadoresService.getjogador(_id)
 		}else{
@@ -83,6 +89,26 @@ async deletarJogador(@Payload() _id:string){
 		return  this.jogadoresService.deletarJogadorId(_id);
 	} catch (error) {
 		this.logger.log(error)
+	}
+}
+
+@MessagePattern('sms')
+async enviarsmsWharsap(@Payload() sms:Sms){
+	try {
+	return await this.twlioservices.sendMessageWhatsap(sms);	
+	} catch (error) {
+	console.log(error);
+	
+	}
+}
+
+@MessagePattern('zenvia')
+async enviarsms(){
+	try {
+		return await this.zenviaservice.sendSms();
+	} catch (error) {
+		console.log(error);
+		
 	}
 }
 }
