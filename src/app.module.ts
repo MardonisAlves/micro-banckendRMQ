@@ -7,8 +7,7 @@ import { CategoriasService } from './categorias/categorias.service';
 import { JogadoresService } from './jogadores/jogadores.service'
 import  {CategoriasController} from './categorias/categorias.controller';
 import { JogadoresController } from './jogadores/jogadores.controller';
-import Twilioservice from './jogadores/services.twilio';
-import ZenviaService from './jogadores/zenvia.service';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -19,10 +18,11 @@ import ZenviaService from './jogadores/zenvia.service';
     MongooseModule.forFeature([
       {name: 'Categoria' , schema: CategoriaSchema},
       {name: 'Jogador' , schema: JogadorSchema}
-    ])
+    ]),
+    MailModule
   ],
 
   controllers:[CategoriasController, JogadoresController],
-  providers: [CategoriasService, JogadoresService, Twilioservice, ZenviaService]
+  providers: [CategoriasService, JogadoresService ]
 })
 export class AppModule {}

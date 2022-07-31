@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/axios": "^0.1.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.0.0",
@@ -32,7 +33,10 @@
     "amqp-connection-manager": "^4.1.1",
     "amqplib": "^0.8.0",
     "axios": "^0.27.2",
+    "ejs": "^3.1.8",
+    "handlebars": "^4.7.7",
     "mongoose": "^6.2.8",
+    "nodemailer": "^6.7.7",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
@@ -46,6 +50,7 @@
     "@types/jest": "27.4.1",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^16.0.0",
+    "@types/nodemailer": "^6.4.4",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",

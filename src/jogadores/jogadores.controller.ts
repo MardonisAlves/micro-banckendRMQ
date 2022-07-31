@@ -5,16 +5,15 @@ import {AtualizarJogador } from './interfaces/atulzar-jogador.interface';
 import {JogadorEmail } from './interfaces/jogador-email';
 import { JogadoresService } from './jogadores.service';
 import {Response } from 'express';
-import Twilioservice from './services.twilio';
-import { Sms } from './interfaces/sms.interface';
-import ZenviaService from './zenvia.service';
+import { MailService } from 'src/mail/mail.service';
+import { User } from './interfaces/user.interface';
+
 @Controller('jogadores')
 export class JogadoresController {
 private  logger = new Logger(JogadoresController.name);
 constructor(
 	private readonly jogadoresService: JogadoresService,
-	private readonly twlioservices:Twilioservice,
-	private readonly zenviaservice:ZenviaService
+	private readonly emailService:MailService
 	       ){}
 
 @EventPattern('new-jogador')
@@ -78,7 +77,7 @@ async atualizarJogador(
 async atualizarAvatar(@Payload() atualizarJogadorDto:any){
 	try{
 		return this.jogadoresService.atualizarAvatar(atualizarJogadorDto);
-		return;
+		
 	}catch(error){
 		this.logger.log(error)	}
 }
@@ -92,23 +91,13 @@ async deletarJogador(@Payload() _id:string){
 	}
 }
 
-@MessagePattern('sms')
-async enviarsmsWharsap(@Payload() sms:Sms){
+@MessagePattern('email')
+async enviarEmail(@Payload() user:User){
 	try {
-	return await this.twlioservices.sendMessageWhatsap(sms);	
+	const token = Math.floor(1000 + Math.random() * 9000).toString()
+	return await this.emailService.sendUserConfirmation(user, token);	
 	} catch (error) {
 	console.log(error);
-	
-	}
-}
-
-@MessagePattern('zenvia')
-async enviarsms(){
-	try {
-		return await this.zenviaservice.sendSms();
-	} catch (error) {
-		console.log(error);
-		
 	}
 }
 }
