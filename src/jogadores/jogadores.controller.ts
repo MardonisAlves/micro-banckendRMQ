@@ -1,38 +1,34 @@
-import { Controller, Post, Logger, Res } from '@nestjs/common';
-import { EventPattern, Payload, MessagePattern, Ctx, RmqContext } from '@nestjs/microservices';
+import { Controller, Logger, Res } from '@nestjs/common';
+import { EventPattern, Payload, MessagePattern, Ctx, RmqContext, CONTEXT } from '@nestjs/microservices';
 import { Jogador } from './interfaces/jogador.interface';
 import {AtualizarJogador } from './interfaces/atulzar-jogador.interface';
 import {JogadorEmail } from './interfaces/jogador-email';
 import { JogadoresService } from './jogadores.service';
-import {Response } from 'express';
 import { MailService } from 'src/mail/mail.service';
 import { User } from './interfaces/user.interface';
+import UtilsRabbitmq from 'src/utils/utils.rabbitmq';
 
 @Controller('jogadores')
 export class JogadoresController {
 private  logger = new Logger(JogadoresController.name);
 constructor(
 	private readonly jogadoresService: JogadoresService,
-	private readonly emailService:MailService
+	private readonly emailService:MailService,
+	private readonly utilsrabbitmq:UtilsRabbitmq
 	       ){}
 
 @EventPattern('new-jogador')
-async criarJogador(@Payload() criarJogador:Jogador , @Ctx() context:RmqContext, @Res() response:Response){
+async criarJogador(@Payload() criarJogador:Jogador , @Ctx() context:RmqContext){
 
 	let errorAck = ["E11000"];
-    const channel = context.getChannelRef();
-    const originalMsg = context.getMessage();
 	try{
 		await this.jogadoresService.criarJogador(criarJogador);
-		await channel.ack(originalMsg);
-
+		await this.utilsrabbitmq.successEmail(context)
 	}catch(error){
-		this.logger.log(error)
-
 		const filterError = errorAck.filter(
          ackError => error.message.includes(ackError))
          if(filterError){
-          await channel.ack(originalMsg);
+			await this.utilsrabbitmq.successEmail(context)
          }
 
 	}finally{
@@ -41,12 +37,16 @@ async criarJogador(@Payload() criarJogador:Jogador , @Ctx() context:RmqContext, 
 }
 
 @MessagePattern('jogadores')
-async getjogadores(@Payload() _id:string){
+async getjogadores(@Payload() _id:string, @Ctx() context:RmqContext){
 	try{
 		if(_id){
-			return this.jogadoresService.getjogador(_id)
+			const getjogador = await this.jogadoresService.getjogador(_id)
+			await this.utilsrabbitmq.successEmail(context)
+			return getjogador;
 		}else{
-			return this.jogadoresService.getjogadores()
+			const getjogador = await this.jogadoresService.getjogadores();
+			await this.utilsrabbitmq.successEmail(context)
+			return getjogador;
 		}
 	}catch(error){
 		this.logger.log(error)
@@ -54,9 +54,11 @@ async getjogadores(@Payload() _id:string){
 }
 
 @MessagePattern('getjogador-email')
-async getjogadorByEmail(@Payload() email:JogadorEmail){
+async getjogadorByEmail(@Payload() email:JogadorEmail, @Ctx() context:RmqContext){
 	try{
-		return  this.jogadoresService.getjogadorByEmail(email);
+		const getJogador = await this.jogadoresService.getjogadorByEmail(email);
+		await this.utilsrabbitmq.successEmail(context)
+		return getJogador;
 	}catch(error){
 	this.logger.log(error)
 	}
@@ -65,37 +67,43 @@ async getjogadorByEmail(@Payload() email:JogadorEmail){
 @MessagePattern('atualizar-jogador')
 async atualizarJogador(
 	@Payload() atualizarJogadorDto:AtualizarJogador,
-	@Payload() id:string){
+	@Payload() id:string, @Ctx() context:RmqContext){
 	try{
-		
-		return this.jogadoresService.atualizarJogador(atualizarJogadorDto, id);
+		const update = await this.jogadoresService.atualizarJogador(atualizarJogadorDto, id);
+		await this.utilsrabbitmq.successEmail(context)
+		return update;
 	}catch(error){
 		this.logger.log(error)	}
 }
 
 @MessagePattern('atualizar-avatar')
-async atualizarAvatar(@Payload() atualizarJogadorDto:any){
+async atualizarAvatar(@Payload() atualizarJogadorDto:any, @Ctx() context:RmqContext){
 	try{
-		return this.jogadoresService.atualizarAvatar(atualizarJogadorDto);
-		
+		const update =await this.jogadoresService.atualizarAvatar(atualizarJogadorDto);
+		await this.utilsrabbitmq.successEmail(context)
+		return update;
 	}catch(error){
 		this.logger.log(error)	}
 }
 
 @MessagePattern('deletar-jogador')
-async deletarJogador(@Payload() _id:string){
+async deletarJogador(@Payload() _id:string, @Ctx() context:RmqContext){
 	try {
-		return  this.jogadoresService.deletarJogadorId(_id);
+		const delet = await this.jogadoresService.deletarJogadorId(_id);
+		await this.utilsrabbitmq.successEmail(context)
+		return delet;
 	} catch (error) {
 		this.logger.log(error)
 	}
 }
 
 @MessagePattern('email')
-async enviarEmail(@Payload() user:User){
+async enviarEmail(@Payload() user:User ,@Ctx() context:RmqContext ){
 	try {
 	const token = Math.floor(1000 + Math.random() * 9000).toString()
-	return await this.emailService.sendUserConfirmation(user, token);	
+	const email = await this.emailService.sendUserConfirmation(user, token)
+	await this.utilsrabbitmq.successEmail(context)
+	return email;
 	} catch (error) {
 	console.log(error);
 	}

@@ -8,6 +8,7 @@ import { JogadoresService } from './jogadores/jogadores.service'
 import  {CategoriasController} from './categorias/categorias.controller';
 import { JogadoresController } from './jogadores/jogadores.controller';
 import { MailModule } from './mail/mail.module';
+import UtilsRabbitmq from './utils/utils.rabbitmq';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { MailModule } from './mail/mail.module';
   ],
 
   controllers:[CategoriasController, JogadoresController],
-  providers: [CategoriasService, JogadoresService ]
+  providers: [CategoriasService, JogadoresService, UtilsRabbitmq]
 })
 export class AppModule {}
