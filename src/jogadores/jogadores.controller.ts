@@ -1,4 +1,4 @@
-import { Controller, Logger, Res } from '@nestjs/common';
+import { Controller, HttpException, HttpStatus, Logger, Res } from '@nestjs/common';
 import { EventPattern, Payload, MessagePattern, Ctx, RmqContext, CONTEXT } from '@nestjs/microservices';
 import { Jogador } from './interfaces/jogador.interface';
 import {AtualizarJogador } from './interfaces/atulzar-jogador.interface';
@@ -49,7 +49,10 @@ async getjogadores(@Payload() _id:string, @Ctx() context:RmqContext){
 			return getjogador;
 		}
 	}catch(error){
-		this.logger.log(error)
+		throw new HttpException({
+			status: HttpStatus.INTERNAL_SERVER_ERROR,
+			error: 'Error interno',
+		  }, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }
 

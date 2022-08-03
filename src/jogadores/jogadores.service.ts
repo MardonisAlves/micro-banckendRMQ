@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Jogador } from './interfaces/jogador.interface'
 import {AtualizarJogador} from './interfaces/atulzar-jogador.interface';
@@ -13,7 +13,11 @@ export class JogadoresService {
 			const criarjogador = new this.jogadorModel(jogador)
 			return await criarjogador.save();
 		}catch(error){
-			this.logger.log(error)
+			//this.logger.log(error)
+			throw new HttpException({
+				status: HttpStatus.FORBIDDEN,
+				error: 'This is a custom message',
+			  }, HttpStatus.FORBIDDEN);
 		}
 	}
 
@@ -21,7 +25,11 @@ export class JogadoresService {
 		try{
 		return await this.jogadorModel.findOne({_id}).exec();
 		}catch(error){
-		this.logger.log(error)		}
+		throw new HttpException({
+			status: HttpStatus.INTERNAL_SERVER_ERROR,
+			error: 'This is a custom message',
+		  }, HttpStatus.INTERNAL_SERVER_ERROR);	
+	}
 	}
 
 	async getjogadores() :Promise<any>{
