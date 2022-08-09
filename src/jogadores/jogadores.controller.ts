@@ -82,6 +82,8 @@ async atualizarJogador(
 @MessagePattern('atualizar-avatar')
 async atualizarAvatar(@Payload() atualizarJogadorDto:any, @Ctx() context:RmqContext){
 	try{
+		console.log(atualizarJogadorDto);
+		
 		const update =await this.jogadoresService.atualizarAvatar(atualizarJogadorDto);
 		await this.utilsrabbitmq.successEmail(context)
 		return update;
